@@ -1,0 +1,12 @@
+Package: GWASpoly.beautifier
+Title: Publication-ready Manhattan plots and utilities
+Version: 26.06.16.01
+Authors@R: 
+    person("Vincent", "Coulombe", , "vincent.coulombe.6@ulaval.ca", 
+    role = c("aut", "cre"),
+    comment=c(ORCID="0009-0000-0594-9985"))
+Description: Publication-ready Manhattan plots and utilities for [GWASpoly](https://jendelman.github.io/GWASpoly/GWASpoly.html).
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 8.0.0
