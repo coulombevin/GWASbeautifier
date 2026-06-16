@@ -14,9 +14,9 @@ save_manhattan <- function(gwas_plot, file_name){
   # Get facets count to define document height
   supplementary_panel_count <- length(unique(ggplot2::ggplot_build(gwas_plot)$layout$layout$PANEL))-1
   # Output file based on file_type
-  ggplot2::ggsave(filename=file_name,
-                  plot=gwas_plot,
-                  width=11.25,
-                  height=2.25 + (supplementary_panel_count) * 1.75,
-                  units="in")
+  ggplot2::ggsave(filename = file_name,
+                  plot = gwas_plot,
+                  width = 11.25,
+                  height = 2.25 + (supplementary_panel_count) * 1.75,
+                  units = "in")
 }
