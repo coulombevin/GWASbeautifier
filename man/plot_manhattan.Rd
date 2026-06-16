@@ -48,22 +48,15 @@ will highlight all markers
 according to 'significant_color'
 parameter.}
 
-\item{gap_size}{: float            Total size multiplier to define
+\item{gap_size}{: float          Total size multiplier to define
 gap size between chromosomes.}
-
-\item{map}{: GWASpoly.fitted  Fitted GWASpoly data.}
 }
 \value{
 ggplot2::ggplot object.
-
-list(int)  list of x position and gaps.
 }
 \description{
 Manhattan plot beautifier adapted from GWASpoly::manhattan.plot customized
 }
 \examples{
 plot_manhattan(data = data_with_threshold, significant_color = NULL)
-Continuous x position generator with gaps adapted from GWASpoly::get_x
-
-get_x(data@map[, 2:3], gap_size = 0.01)
 }
