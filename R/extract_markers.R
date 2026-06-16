@@ -7,6 +7,7 @@
 #'
 #' @returns data.frame object with all requested markers.
 #' @export
+#' @importFrom magrittr %>%
 #' @examples
 #' significant_markers <- extract_markers(data = data_with_threshold)
 extract_markers <- function (data, significant_only = TRUE) {

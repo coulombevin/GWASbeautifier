@@ -3,3 +3,4 @@
 export(extract_markers)
 export(plot_manhattan)
 export(save_manhattan)
+importFrom(magrittr,"%>%")

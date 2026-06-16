@@ -25,6 +25,7 @@
 #'
 #' @returns ggplot2::ggplot object.
 #' @export
+#' @importFrom magrittr %>%
 #' @examples
 #' plot_manhattan(data = data_with_threshold, significant_color = NULL)
 plot_manhattan <- function (data,
