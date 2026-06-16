@@ -2,6 +2,9 @@
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/coulombevin/GWASpoly.beautifier/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/coulombevin/GWASpoly.beautifier/actions/workflows/R-CMD-check.yaml)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Codecov test coverage](https://codecov.io/gh/coulombevin/GWASpoly.beautifier/graph/badge.svg)](https://app.codecov.io/gh/coulombevin/GWASpoly.beautifier)
+<span style="display:inline-block;background:#5b5b5b;color:#fff;padding:2px 7px;font:12px -apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;text-shadow:0 1px 0 rgba(0,0,0,.3);box-shadow:inset 0 -1px 0 rgba(0,0,0,.12);border-radius:3px 0 0 3px;vertical-align:middle;">Version</span><span style="display:inline-block;background:#97CA00;color:#fff;padding:2px 7px;font:12px -apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;text-shadow:0 1px 0 rgba(0,0,0,.3);box-shadow:inset 0 -1px 0 rgba(0,0,0,.12);border-radius:0 3px 3px 0;vertical-align:middle;border-left:1px solid rgba(0,0,0,.15);">1.0</span>
 <!-- badges: end -->
 
 `GWASpoly.beautifier` is a small utility package that helps turn

@@ -1,6 +1,6 @@
 Package: GWASpoly.beautifier
 Title: Publication-ready Manhattan plots and utilities
-Version: 26.06.16.01
+Version: 1.0
 Authors@R: 
     person("Vincent", "Coulombe", , "vincent.coulombe.6@ulaval.ca", 
     role = c("aut", "cre"),
