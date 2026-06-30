@@ -5,13 +5,9 @@
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-<<<<<<< HEAD
-`GWASbeautifier` is a small utility package that helps turn [`GWASpoly`](https://github.com/jendelman/GWASpoly) version 2 outputs into publication-ready Manhattan plots and marker tables.
-=======
-`GWASpoly.beautifier` is a small utility package that helps turn [`GWASpoly`](https://github.com/jendelman/GWASpoly) version 2 outputs into publication-ready Manhattan plots.
->>>>>>> 8db7c34440c983fa1a8559e4d0468a654322c5ba
+`GWASbeautifier` is a small utility package that helps turn [`GWASpoly`](https://github.com/jendelman/GWASpoly) version 2 and [`GAPIT`](https://github.com/jiabowang/GAPIT) outputs into publication-ready Manhattan plots and marker tables.
 
-The package is designed for users who already run GWAS analyses with `GWASpoly`, but want more control over plotting style, significant marker highlighting, chromosome spacing, and more.
+The package is designed for users who already run GWAS analyses with `GWASpoly` or `GAPIT`, but want more control over plotting style, significant marker highlighting, chromosome spacing, and more.
 
 ## Comparison
 
@@ -22,11 +18,11 @@ GWAS beautifier | <img width="3375" height="675" alt="GWASpoly beautifier" src="
 
 ## Main features
 
-- Extract all markers or only markers above the GWAS threshold from a `GWASpoly.thresh` object.
-- Create customized Manhattan plots from `GWASpoly::set.threshold(...)` output.
+- Extract all markers or only markers above the GWAS threshold.
+- Create customized Manhattan plots from `GWASpoly` or `GAPIT` output.
 - Highlight all significant markers, or only a selected list of significant markers.
 - Save Manhattan plots with a height adapted to the number of plotted traits.
-- Keep the workflow compatible with standard `GWASpoly` objects.
+- Keep the workflow compatible with standard `GWASpoly` or `GAPIT` objects.
 
 ## Installation
 
@@ -66,10 +62,10 @@ data_with_threshold <- set.threshold(data_loco_scan, method = "M.eff", level = 0
 
 ## Extract markers
 
-Use `extract_markers()` to convert the relevant marker information from the `GWASpoly.thresh` object into a regular data frame.
+Use `GWASbeautifier::extract_markers()` to convert the relevant marker information from the `GWASpoly` or `GAPIT` object into a regular data frame. `GAPIT` object are obtained from `GWASbeautifier::get_formatted_gapit()`
 
 ``` r
-significant_markers <- extract_markers(data = data_with_threshold)
+significant_markers <- GWASbeautifier::extract_markers(data = data_with_threshold)
 
 head(significant_markers)
 
@@ -85,7 +81,10 @@ head(significant_markers)
 To extract all markers instead of only significant markers:
 
 ``` r
-all_markers <- extract_markers(data = data_with_threshold, significant_only = FALSE)
+all_markers <- GWASbeautifier::extract_markers(
+  data = data_with_threshold,
+  significant_only = FALSE
+  )
 
 head(all_markers)
 
@@ -100,17 +99,19 @@ head(all_markers)
 
 ## Create a beautified Manhattan plot
 
-Here's a fully customised Manhattan plot.
+Here's a fully customized Manhattan plot.
 
 ``` r
-p <- plot_manhattan(data_with_threshold,,
-                    traits = 'vine.maturity',
-                    chrom_color = c('#74c69d', '#b7e4c7'),
-                    significant_color = '#bc4749',
-                    point_size = 1,
-                    threshold_line_color = '#1b4332',
-                    threshold_line_type = 3,
-                    gap_size=0.03)
+p <- GWASbeautifier::plot_manhattan(
+  data_with_threshold,
+  traits = 'vine.maturity',
+  chrom_color = c('#74c69d', '#b7e4c7'),
+  significant_color = '#bc4749',
+  point_size = 1,
+  threshold_line_color = '#1b4332',
+  threshold_line_type = 3,
+  gap_size=0.03
+  )
 ```
 <img width="3375" height="675" alt="GWASpoly beautifier_custom" src="https://github.com/user-attachments/assets/e2ee370d-b853-4f61-9279-6f78016219c4" />
 
@@ -120,7 +121,7 @@ p <- plot_manhattan(data_with_threshold,,
 If `significant_markers = NULL`, all markers above the threshold are highlighted when `significant_color` is not `NULL`.
 
 ``` r
-p_all_significant <- plot_manhattan(data_with_threshold)
+p_all_significant <- GWASbeautifier::plot_manhattan(data_with_threshold)
 ```
 <img width="3375" height="675" alt="GWASpoly beautifier" src="https://github.com/user-attachments/assets/a045423d-fc4c-4ed3-a004-66fe8ac9fcbd" />
 
@@ -130,7 +131,10 @@ p_all_significant <- plot_manhattan(data_with_threshold)
 If `significant_markers != NULL`, only the markers in that data frame (with a score above the threshold) are highlighted when `significant_color` is not `NULL`.
 
 ``` r
-p <- plot_manhattan(data = data_with_threshold, significant_markers = dplyr::filter(significant_markers, Chrom == 'chr05'))
+p <- GWASbeautifier::plot_manhattan(
+  data = data_with_threshold,
+  significant_markers = dplyr::filter(significant_markers, Chrom == 'chr05')
+  )
 ```
 <img width="3375" height="675" alt="GWASpoly beautifier_head_significant" src="https://github.com/user-attachments/assets/96735065-930b-4358-bdc2-69f9e1ac807c" />
 
@@ -140,39 +144,51 @@ p <- plot_manhattan(data = data_with_threshold, significant_markers = dplyr::fil
 If `significant_color = NULL`, no separate significant-marker highlight layer is added.
 
 ``` r
-p_no_highlight <- plot_manhattan(data = data_with_threshold, significant_color = NULL)
+p_no_highlight <- GWASbeautifier::plot_manhattan(
+  data = data_with_threshold,
+  significant_color = NULL
+  )
 ```
 <img width="3375" height="675" alt="GWASpoly beautifier_no_sig_color" src="https://github.com/user-attachments/assets/8c6ba9fe-dde6-46a8-a22d-a7b638a6d388" />
 &nbsp;
 <br>
 ## Save the plot
 
-`save_manhattan()` saves a `ggplot` object and automatically adjusts the figure height according to the number of facet panels.
+`GWASbeautifier::save_manhattan()` saves a `ggplot` object and automatically adjusts the figure height according to the number of facet panels.
 
 ``` r
-save_manhattan(gwas_plot = p, file_name = "vine_maturity_manhattan.png")
+GWASbeautifier::save_manhattan(
+  gwas_plot = p,
+  file_name = "vine_maturity_manhattan.png"
+  )
 ```
 
 You can also save to PDF, jpeg, ... by changing the file extension:
 
 ``` r
-save_manhattan(gwas_plot = p, file_name = "vine_maturity_manhattan.pdf")
+GWASbeautifier::save_manhattan(
+  gwas_plot = p,
+  file_name = "vine_maturity_manhattan.pdf"
+  )
 ```
 
 ## Function overview
 
-### `extract_markers()`
+### `GWASbeautifier::extract_markers()`
 
 ``` r
-extract_markers(data, significant_only = TRUE)
+GWASbeautifier::extract_markers(
+  data,
+  significant_only = TRUE
+  )
 ```
 
 Returns a data frame containing the trait, marker name, chromosome, position, and GWAS model scores. When `significant_only = TRUE`, only markers with at least one model score above the corresponding threshold are returned.
 
-### `plot_manhattan()`
+### `GWASbeautifier::plot_manhattan()`
 
 ``` r
-plot_manhattan(
+GWASbeautifier::plot_manhattan(
   data,
   traits = NULL,
   models = NULL,
@@ -185,21 +201,24 @@ plot_manhattan(
   threshold_line_type = 2,
   significant_markers = NULL,
   gap_size = 0.01
-)
+  )
 ```
 
-Creates a customized Manhattan plot from a `GWASpoly.thresh` object. The function requires thresholded GWASpoly output, unlike the default GWASpoly Manhattan plotting workflow.
+Creates a customized Manhattan plot from a `GWASpoly` or `GAPIT` object. The function requires thresholded `GWASpoly` output, unlike the default GWASpoly Manhattan plotting workflow, or csv file `GAPIT` output.
 
-### `save_manhattan()`
+### `GWASbeautifier::save_manhattan()`
 
 ``` r
-save_manhattan(gwas_plot, file_name)
+GWASbeautifier::save_manhattan(
+  gwas_plot,
+  file_name
+  )
 ```
 
 Saves a Manhattan plot generated as a `ggplot` object. The output file type is inferred from the file extension supplied in `file_name`.
 
 ## Notes
 
-This package does not replace `GWASpoly`. It is intended as a lightweight
-post-processing and visualization companion for GWASpoly analyses.
+This package does not replace `GWASpoly` or `GAPIT`. It is intended as a lightweight
+post-processing and visualization companion for GWAS analyses.
 
