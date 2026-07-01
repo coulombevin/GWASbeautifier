@@ -32,9 +32,9 @@ marker, NULL  leaves significant
 markers with the same color as
 not significant ones.}
 
-\item{point_size}{: float          Diameter of the points.}
+\item{point_size}{: double         Diameter of the points.}
 
-\item{point_alpha}{: float          Points transparency.}
+\item{point_alpha}{: double         Points transparency.}
 
 \item{threshold_line_color}{: str            Threshold line color.}
 
@@ -49,7 +49,7 @@ will highlight all markers
 according to 'significant_color'
 parameter.}
 
-\item{gap_size}{: float          Total size multiplier to define
+\item{gap_size}{: double         Total size multiplier to define
 gap size between chromosomes.}
 }
 \value{
@@ -68,6 +68,7 @@ plot_manhattan(data = data_with_threshold, significant_color = NULL)
 }
 \seealso{
 \itemize{
+\item \code{\link[=get_formatted_gapit]{get_formatted_gapit()}} for GAPIT data importation and formatting.
 \item \code{\link[=extract_markers]{extract_markers()}} for significant marker extraction.
 \item \code{\link[=save_manhattan]{save_manhattan()}} for pre-formatted plot saving options.
 }
