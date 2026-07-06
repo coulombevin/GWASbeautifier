@@ -27,6 +27,7 @@
 #' @returns ggplot2::ggplot object.
 #' @export
 #' @importFrom magrittr %>%
+#' @importFrom ggplot2 element_text
 #' @examples
 #' \dontrun{
 #' plot_manhattan(data = data_with_threshold, significant_color = NULL)
@@ -42,16 +43,18 @@ plot_manhattan <- function (
     models = NULL,
     chrom = NULL,
     chrom_color = c('#219ebc', '#8ecae6'),
-    significant_color = '#fb8500',
+    significant_color = '#cc4f89',
+    multi_model_significant_color = "#fb8500",
     point_size = 1.5,
     point_alpha = NA,
     threshold_line_color = 'grey50',
     threshold_line_type = 2,
     significant_markers = NULL,
-    gap_size = 0.01) {
+    gap_size = 0.01,
+    split_models = FALSE) {
   # Allow only data from GWASpoly::set.threshold(...) or
   # GWASbeautifier::get_formatted_gapit(...) command.
-  stopifnot(inherits(data, 'GWASpoly.thresh') | inherits(data, "GAPIT.thresh"))
+  stopifnot(inherits(data, "GWASpoly.thresh") | inherits(data, "GAPIT.thresh"))
 
   if (is.null(traits)) {
     traits <- names(data@scores)
@@ -84,6 +87,7 @@ plot_manhattan <- function (
     ix <- which(as.character(data@map$Chrom) == chrom)
     x <- data@map$Position[ix]/1e+06
   }
+
   for (k in 1:n.trait) {
     scores <- as.data.frame(data@scores[[traits[k]]][ix, models])
     colnames(scores) <- models
@@ -99,9 +103,19 @@ plot_manhattan <- function (
                                values_to = "y",
                                values_drop_na = TRUE)
     tmp$trait <- traits[k]
-
-    thresh.data <- dplyr::bind_rows(thresh.data, data.frame(y = max(data@threshold[traits[k], models]), trait = traits[k]))
-
+    # Store all thresholds data if output splited models
+    if (split_models) {
+      thresh.data <- dplyr::bind_rows(
+        thresh.data,
+        data.frame(
+          y = data@threshold[traits[k], models],
+          trait = traits[k],
+          model = models
+        )
+      )
+    } else {
+      thresh.data <- dplyr::bind_rows(thresh.data, data.frame(y = max(data@threshold[traits[k], models]), trait = traits[k]))
+    }
     plotme <- dplyr::bind_rows(plotme, tmp)
   }
   plotme$trait <- factor(plotme$trait)
@@ -111,80 +125,193 @@ plot_manhattan <- function (
                        x = plotme$model)
   plotme$model <- factor(plotme$model)
 
+
+
   # Find facet maximum value and add 1 LOD to increase Y limit
-  facet_limits <- dplyr::bind_rows(plotme %>% dplyr::select(trait, y),
-                                   thresh.data %>% dplyr::select(trait, y)) %>%
-    dplyr::group_by(trait) %>%
-    dplyr::summarise(y = max(y, na.rm = TRUE) + 1, .groups = 'drop')
+  if (split_models) {
+    facet_limits <- dplyr::bind_rows(plotme %>% dplyr::select(trait, y, model),
+                                     thresh.data %>% dplyr::select(trait, y, model)) %>%
+      dplyr::group_by(trait, model) %>%
+      dplyr::summarise(y = max(y, na.rm = TRUE) + 1, .groups = 'drop')
+    p <- list()
+    for (t in traits){
+      sub_plotme <- plotme[plotme$trait == t,]
+      p[[t]] <- ggplot2::ggplot(data = sub_plotme,
+                                ggplot2::aes(x = .data$x, y = .data$y, colour = .data$color)) +
+        ggplot2::scale_y_continuous(name = expression(paste('-log'[10], '(p)'))) +
+        ggplot2::guides(colour = 'none') +
+        ggplot2::theme_bw() +
+        ggplot2::theme(text = ggplot2::element_text(size = 15),
+                       panel.grid = ggplot2::element_blank(),
+                       axis.text.x = ggplot2::element_text(angle = 90,vjust = 0.5),
+                       legend.position = 'none',
+                       strip.background = ggplot2::element_blank(),
+                       strip.text.y = ggplot2::element_text(angle = 90),
+                       plot.title = element_text(hjust = 0.5)) +
+        ggplot2::geom_point(size = point_size,
+                            alpha = point_alpha) +
+        ggplot2::scale_shape(solid = TRUE) +
+        ggplot2::facet_wrap(~model,
+                            ncol = 1,
+                            scales = 'free_y',
+                            strip.position = "right") +
+        ggplot2::geom_blank(data = facet_limits[facet_limits$trait == t,],
+                            ggplot2::aes(y = y),
+                            inherit.aes = FALSE) +
+        ggplot2::ggtitle(t)
 
-  # Generate basic plot based on parameters
-  p <- ggplot2::ggplot(data = plotme,
-                       ggplot2::aes(x = .data$x, y = .data$y, colour = .data$color)) +
-    ggplot2::ylab(expression(paste('-log'[10], '(p)'))) +
-    ggplot2::guides(colour = 'none') +
-    ggplot2::theme_bw() +
-    ggplot2::theme(text = ggplot2::element_text(size = 15),
-                   panel.grid = ggplot2::element_blank(),
-                   axis.text.x = ggplot2::element_text(angle = 90,vjust = 0.5),
-                   legend.position = 'none',
-                   strip.background = ggplot2::element_blank()) +
-    ggplot2::geom_point(size = point_size,
-                        alpha = point_alpha) +
-    ggplot2::scale_shape(solid = TRUE) +
-    ggplot2::facet_wrap(~trait,
-                        ncol = 1,
-                        scales = 'free_y') +
-    ggplot2::geom_blank(data = facet_limits,
-                        ggplot2::aes(y = y),
-                        inherit.aes = FALSE)
+      # Look for significant markers highlight
+      if (!is.null(significant_color)) {
+        # Copy the original data for highlight and manipulation
+        plotme_significant <- sub_plotme %>%
+          dplyr::left_join(thresh.data %>% dplyr::select(trait, model, thresh = y), by = c('trait', 'model'))
+        # Look for file name that contain a list of precise markers to highlight
+        if (!is.null(significant_markers )){
+          # Set show value to TRUE if markers are found in csv
+          #TODO: revoir si vraiment ça fonctionne
+          plotme_significant <- plotme_significant %>%
+            dplyr::left_join(dplyr::select(significant_markers %>%
+                                             dplyr::mutate(significant_show = TRUE),
+                                           trait, Marker, significant_show, model),
+                             by = c("trait", "Marker", "model")) %>%
+            dplyr::mutate(significant_show = tidyr::replace_na(significant_show, FALSE))
+        } else {
+          # No file means highlight all significant markers
+          plotme_significant <- plotme_significant %>%
+            dplyr::mutate(significant_show = (y > thresh))
+        }
 
-  # Look for significant markers highlight
-  if (!is.null(significant_color)) {
-    # Copy the original data for highlight and manipulation
-    plotme_significant <- plotme %>%
-      dplyr::left_join(thresh.data %>% dplyr::select(trait, thresh = y), by = 'trait')
-    # Look for file name that contain a list of precise markers to highlight
-    if (!is.null(significant_markers )){
-      # Set show value to TRUE if markers are found in csv
-      plotme_significant <- plotme_significant %>%
-        dplyr::left_join(dplyr::select(significant_markers %>%
-                                         dplyr::mutate(significant_show = TRUE),
-                         trait, Marker, significant_show),
-                  by = c("trait", "Marker")) %>%
-        dplyr::mutate(significant_show = tidyr::replace_na(significant_show, FALSE))
-    } else {
-      # No file means highlight all significant markers
-      plotme_significant <- plotme_significant %>%
-        dplyr::mutate(significant_show = TRUE)
+        if (!is.null(multi_model_significant_color)) {
+          plotme_significant <- plotme_significant %>%
+            dplyr::group_by(Marker) %>%
+            dplyr::mutate(multi_model = significant_show & (sum(significant_show) >= 2) & trait == t) %>%
+            dplyr::ungroup()
+        } else {
+          plotme_significant <- plotme_significant %>%
+            dplyr::mutate(multi_model = FALSE)
+        }
+
+        # Add highlighted markers over the current plot
+        p[[t]] <- p[[t]] +
+          ggplot2::geom_point(
+            data = subset(
+              plotme_significant,
+              (significant_show & trait == t)
+            ),
+            color = significant_color,
+            size = point_size * 1.25,
+            alpha = point_alpha
+          ) +
+          ggplot2::geom_point(
+            data = subset(
+              plotme_significant,
+              (multi_model & trait == t)
+            ),
+            color = multi_model_significant_color,
+            size = point_size * 1.25,
+            alpha = point_alpha
+          )
+      }
+
+      if (is.null(chrom)) {
+        allchr <- unique(data@map[, 2])
+        breaks <- (tapply(x, data@map[, 2], max) + tapply(x, data@map[, 2], min))/2
+        # Plot each markers based on chromosome color
+        p[[t]] <- p[[t]] +
+          ggplot2::scale_x_continuous(name = 'Chromosome',
+                                      breaks = breaks,
+                                      labels = allchr,
+                                      expand = ggplot2::expansion(mult = gap_size)) +
+          ggplot2::scale_colour_manual(values = chrom_color)
+      } else {
+        # Plot each markers based on odd or even chromosome index
+        p[[t]] <- p[[t]] +
+          ggplot2::scale_x_continuous(name = 'Position (Mb)') +
+          ggplot2::scale_colour_manual(values = chrom_color[(which(unique(as.character(data@map$Chrom)) == chrom) %% 2) + 1])
+      }
+      p[[t]] <- p[[t]] +
+        ggplot2::geom_hline(data = thresh.data[thresh.data$trait == t,],
+                            mapping = ggplot2::aes(yintercept = .data$y),
+                            linetype = threshold_line_type,
+                            colour = threshold_line_color)
     }
-    # Add highlighted markers over the current plot
-    p <- p +
-      ggplot2::geom_point(data = subset(plotme_significant, (y > thresh & significant_show)),
-                          color = significant_color,
-                          size = point_size,
-                          alpha = point_alpha)
-  }
 
-  if (is.null(chrom)) {
-    allchr <- unique(data@map[, 2])
-    breaks <- (tapply(x, data@map[, 2], max) + tapply(x, data@map[, 2], min))/2
-    # Plot each markers based on chromosome color
-    p <- p +
-      ggplot2::scale_x_continuous(name = 'Chromosome',
-                                  breaks = breaks,
-                                  labels = allchr,
-                                  expand = ggplot2::expansion(mult = gap_size)) +
-      ggplot2::scale_colour_manual(values = chrom_color)
+    return(p)
+
   } else {
-    # Plot each markers based on odd or even chromosome index
+    facet_limits <- dplyr::bind_rows(plotme %>% dplyr::select(trait, y),
+                                     thresh.data %>% dplyr::select(trait, y)) %>%
+      dplyr::group_by(trait) %>%
+      dplyr::summarise(y = max(y, na.rm = TRUE) + 1, .groups = 'drop')
+    p <- ggplot2::ggplot(data = plotme,
+                         ggplot2::aes(x = .data$x, y = .data$y, colour = .data$color)) +
+      ggplot2::ylab(expression(paste('-log'[10], '(p)'))) +
+      ggplot2::guides(colour = 'none') +
+      ggplot2::theme_bw() +
+      ggplot2::theme(text = ggplot2::element_text(size = 15),
+                     panel.grid = ggplot2::element_blank(),
+                     axis.text.x = ggplot2::element_text(angle = 90,vjust = 0.5),
+                     legend.position = 'none',
+                     strip.background = ggplot2::element_blank()) +
+      ggplot2::geom_point(size = point_size,
+                          alpha = point_alpha) +
+      ggplot2::scale_shape(solid = TRUE) +
+      ggplot2::facet_wrap(~trait,
+                          ncol = 1,
+                          scales = 'free_y') +
+      ggplot2::geom_blank(data = facet_limits,
+                          ggplot2::aes(y = y),
+                          inherit.aes = FALSE)
+
+    # Look for significant markers highlight
+    if (!is.null(significant_color)) {
+      # Copy the original data for highlight and manipulation
+      plotme_significant <- plotme %>%
+        dplyr::left_join(thresh.data %>% dplyr::select(trait, thresh = y), by = 'trait')
+      # Look for file name that contain a list of precise markers to highlight
+      if (!is.null(significant_markers )){
+        # Set show value to TRUE if markers are found in csv
+        plotme_significant <- plotme_significant %>%
+          dplyr::left_join(dplyr::select(significant_markers %>%
+                                           dplyr::mutate(significant_show = TRUE),
+                                         trait, Marker, significant_show),
+                           by = c("trait", "Marker")) %>%
+          dplyr::mutate(significant_show = tidyr::replace_na(significant_show, FALSE))
+      } else {
+        # No file means highlight all significant markers
+        plotme_significant <- plotme_significant %>%
+          dplyr::mutate(significant_show = TRUE)
+      }
+      # Add highlighted markers over the current plot
+      p <- p +
+        ggplot2::geom_point(data = subset(plotme_significant, (y > thresh & significant_show)),
+                            color = significant_color,
+                            size = point_size,
+                            alpha = point_alpha)
+
+    }
+
+    if (is.null(chrom)) {
+      allchr <- unique(data@map[, 2])
+      breaks <- (tapply(x, data@map[, 2], max) + tapply(x, data@map[, 2], min))/2
+      # Plot each markers based on chromosome color
+      p <- p +
+        ggplot2::scale_x_continuous(name = 'Chromosome',
+                                    breaks = breaks,
+                                    labels = allchr,
+                                    expand = ggplot2::expansion(mult = gap_size)) +
+        ggplot2::scale_colour_manual(values = chrom_color)
+    } else {
+      # Plot each markers based on odd or even chromosome index
+      p <- p +
+        ggplot2::scale_x_continuous(name = 'Position (Mb)') +
+        ggplot2::scale_colour_manual(values = chrom_color[(which(unique(as.character(data@map$Chrom)) == chrom) %% 2) + 1])
+    }
     p <- p +
-      ggplot2::scale_x_continuous(name = 'Position (Mb)') +
-      ggplot2::scale_colour_manual(values = chrom_color[(which(unique(as.character(data@map$Chrom)) == chrom) %% 2) + 1])
+      ggplot2::geom_hline(data = thresh.data,
+                          mapping = ggplot2::aes(yintercept = .data$y),
+                          linetype = threshold_line_type,
+                          colour = threshold_line_color)
+    return(p)
   }
-  p <- p +
-    ggplot2::geom_hline(data = thresh.data,
-                        mapping = ggplot2::aes(yintercept = .data$y),
-                        linetype = threshold_line_type,
-                        colour = threshold_line_color)
-  return(p)
 }

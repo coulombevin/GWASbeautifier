@@ -12,13 +12,15 @@ plot_manhattan(
   models = NULL,
   chrom = NULL,
   chrom_color = c("#219ebc", "#8ecae6"),
-  significant_color = "#fb8500",
+  significant_color = "#cc4f89",
+  multi_model_significant_color = "#fb8500",
   point_size = 1.5,
   point_alpha = NA,
   threshold_line_color = "grey50",
   threshold_line_type = 2,
   significant_markers = NULL,
-  gap_size = 0.01
+  gap_size = 0.01,
+  split_models = FALSE
 )
 }
 \arguments{
