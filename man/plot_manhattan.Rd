@@ -34,6 +34,10 @@ marker, NULL  leaves significant
 markers with the same color as
 not significant ones.}
 
+\item{multi_model_significant_color}{: str   Color used to highlight
+significant markers in
+multi-model plots.}
+
 \item{point_size}{: double         Diameter of the points.}
 
 \item{point_alpha}{: double         Points transparency.}
@@ -53,6 +57,9 @@ parameter.}
 
 \item{gap_size}{: double         Total size multiplier to define
 gap size between chromosomes.}
+
+\item{split_models}{: bool           If \code{TRUE}, split plot models
+into separate panels.}
 }
 \value{
 ggplot2::ggplot object.

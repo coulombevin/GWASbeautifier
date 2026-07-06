@@ -14,10 +14,16 @@ Imports:
     dplyr,
     ggplot2,
     magrittr,
-    tidyr
+    methods,
+    rlang,
+    tibble,
+    tidyr,
+    utils
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 8.0.0
+Depends:
+    R (>= 3.5.0)

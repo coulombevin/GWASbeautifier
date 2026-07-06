@@ -9,6 +9,9 @@
 #' @returns GAPIT.thresh object.
 #' @export
 #' @importFrom magrittr %>%
+#' @importFrom methods new setClass
+#' @importFrom utils read.csv
+#' @importFrom rlang .data :=
 #'
 #' @examples
 #' \dontrun{
@@ -51,7 +54,7 @@ get_formatted_gapit <- function(result_directory, gapit_cutOff  = 0.05, verbose 
         sub("GAPIT.Association.GWAS_Results.", "", file)
       )
       # Get data and format for scores and map manipulation
-      tmp_file <- read.csv(paste(result_directory, trait, file, sep = "/")) %>%
+      tmp_file <- utils::read.csv(paste(result_directory, trait, file, sep = "/")) %>%
         dplyr::select(SNP, Chr, Pos, P.value) %>%
         dplyr::mutate(Chr = factor(Chr, ordered = TRUE)) %>%
         dplyr::rename(Marker = SNP, Chrom = Chr, Position = Pos) %>%
@@ -93,9 +96,9 @@ get_formatted_gapit <- function(result_directory, gapit_cutOff  = 0.05, verbose 
       }
     }
     # Free memory
-    rm (tmp_file)
+    rm(tmp_file)
     # Set threshold matrix using GAPIT logic
-    threshold <- -log10(gapit_cutOff /nrow(gapit_output$scores[[trait]]))
+    threshold <- -log10(gapit_cutOff / nrow(gapit_output$scores[[trait]]))
     # Generate threshold matrix or append threshold to it
     if (is.null(gapit_output$threshold)) {
       gapit_output$threshold <- matrix(
@@ -116,7 +119,7 @@ get_formatted_gapit <- function(result_directory, gapit_cutOff  = 0.05, verbose 
   }
   # Sort map
   gapit_output$map <- gapit_output$map %>%
-    arrange(Chrom, Position)
+    dplyr::arrange(Chrom, Position)
   rownames(gapit_output$map) <- NULL
   # Sort scores using map order
   for (trait in traits) {
@@ -125,7 +128,7 @@ get_formatted_gapit <- function(result_directory, gapit_cutOff  = 0.05, verbose 
     ]
   }
   # Define class for GAPIT that match GWASpoly.thresh format
-  setClass(
+  methods::setClass(
     Class = "GAPIT.thresh",
     slots = list(
       threshold = "matrix",
@@ -134,7 +137,7 @@ get_formatted_gapit <- function(result_directory, gapit_cutOff  = 0.05, verbose 
     )
   )
   # Generate GAPIT.thresh object
-  gt <- new(
+  gt <- methods::new(
     "GAPIT.thresh",
     threshold = gapit_output$threshold,
     scores = gapit_output$scores,

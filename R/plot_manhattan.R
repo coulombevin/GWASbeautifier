@@ -9,6 +9,9 @@
 #'                                              marker, NULL  leaves significant
 #'                                              markers with the same color as
 #'                                              not significant ones.
+#' @param multi_model_significant_color : str   Color used to highlight
+#'                                              significant markers in
+#'                                              multi-model plots.
 #' @param point_size           : double         Diameter of the points.
 #' @param point_alpha          : double         Points transparency.
 #' @param threshold_line_color : str            Threshold line color.
@@ -23,6 +26,8 @@
 #'                                              parameter.
 #' @param gap_size             : double         Total size multiplier to define
 #'                                              gap size between chromosomes.
+#' @param split_models         : bool           If `TRUE`, split plot models
+#'                                              into separate panels.
 #'
 #' @returns ggplot2::ggplot object.
 #' @export

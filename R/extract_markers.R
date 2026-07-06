@@ -33,8 +33,8 @@ extract_markers <- function (data, significant_only = TRUE) {
       dplyr::mutate(Marker = rownames(.), .before = 1) %>%
       dplyr::mutate(trait = names(data@scores[i]), .before = 1) %>%
       dplyr::left_join(dplyr::select(data@map, Marker, Chrom, Position), by = 'Marker') %>%
-      relocate(Chrom, .after = Marker) %>%
-      relocate(Position, .after = Chrom)
+      dplyr::relocate(Chrom, .after = Marker) %>%
+      dplyr::relocate(Position, .after = Chrom)
 
     if (significant_only) {
       # Get the threshold
