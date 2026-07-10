@@ -4,3 +4,5 @@
 ^\.github$
 ^codecov\.yml$
 GWASbeautifier.Rproj
+.updates_pipeline.R
+^CITATION\.cff$

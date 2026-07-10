@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: manual
+authors:
+- family-names: "Coulombe"
+  given-names: "Vincent"
+  orcid: "https://orcid.org/0009-0000-0594-9985"
+title: "GWASbeautifier: Publication-Ready Manhattan Plots and Utilities"
+version: 2.1
+date-released: 2026-06-16
+url: "https://github.com/coulombevin/GWASbeautifier"
