@@ -4,7 +4,7 @@
 #'
 #' @param data 'package'.thresh : Variable of class GWASpoly.thresh or GAPIT.thresh
 #' @param traits traits vec(str) : Vector of trait names (by default, all traits plotted)
-#' @param models vec(str) : Vector of model names (by default, all models plotted)
+#' @param models vec(str) : Vector of model names (by default, all models plotted). The order of models name will be followed from top to bottom if `split_models bool=TRUE`.
 #' @param chrom vec(str) : Vector of chromosome to plot (by default, all chromosomes plotted)
 #' @param chrom_color vec(str, str) : List of 2 string color for alternate coloration of marker.
 #' @param significant_color str : String color for significant marker, NULL  leaves significant markers with the same color as not significant ones.
@@ -82,8 +82,7 @@ plot_manhattan <- function (
   if (is.null(chrom)) {
     x <- get_x(data@map[, 2:3], gap_size = gap_size)
     ix <- 1:nrow(data@map)
-  }
-  else {
+  } else {
     stopifnot(chrom %in% levels(data@map$Chrom))
     ix <- which(as.character(data@map$Chrom) == chrom)
     x <- data@map$Position[ix]/1e+06
@@ -124,16 +123,19 @@ plot_manhattan <- function (
                        x = plotme$model)
   plotme$model <- gsub(pattern = "-alt", replacement = "",
                        x = plotme$model)
-  plotme$model <- factor(plotme$model)
+  # Factorize models to follow user model order
+  plotme$model <- factor(plotme$model, levels = models)
+  thresh.data$model <- factor(thresh.data$model, levels = models)
 
 
 
-  # Find facet maximum value and add 1 LOD to increase Y limit
   if (split_models) {
+    # Find facet maximum value and add 1 LOD to increase Y limit and re-apply factor levels
     facet_limits <- dplyr::bind_rows(plotme %>% dplyr::select(trait, y, model),
                                      thresh.data %>% dplyr::select(trait, y, model)) %>%
       dplyr::group_by(trait, model) %>%
-      dplyr::summarise(y = max(y, na.rm = TRUE) + 1, .groups = 'drop')
+      dplyr::summarise(y = max(y, na.rm = TRUE) + 1, .groups = 'drop')%>%
+      dplyr::mutate(model = factor(model, levels = models))
     p <- list()
     for (t in traits){
       sub_plotme <- plotme[plotme$trait == t,]

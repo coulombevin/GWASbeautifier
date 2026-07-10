@@ -26,7 +26,7 @@ plot_manhattan(
 
 \item{traits}{traits vec(str) : Vector of trait names (by default, all traits plotted)}
 
-\item{models}{vec(str) : Vector of model names (by default, all models plotted)}
+\item{models}{vec(str) : Vector of model names (by default, all models plotted). The order of models name will be followed from top to bottom if \verb{split_models bool=TRUE}.}
 
 \item{chrom}{vec(str) : Vector of chromosome to plot (by default, all chromosomes plotted)}
 
