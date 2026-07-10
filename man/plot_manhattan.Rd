@@ -18,7 +18,8 @@ plot_manhattan(
   threshold_line_type = 2,
   significant_markers = NULL,
   gap_size = 0.01,
-  split_models = FALSE
+  split_models = FALSE,
+  lod_thicks_count = 4
 )
 }
 \arguments{
@@ -49,6 +50,8 @@ plot_manhattan(
 \item{gap_size}{double : Total size multiplier to define gap size between chromosomes.}
 
 \item{split_models}{bool : If \code{TRUE}, split plot models into separate panels.}
+
+\item{lod_thicks_count}{int : Number of y breaks including 0 and max value (plots will always start at 0, if \code{lod_thicks_count=2} then one thick at 0 and one at max value).}
 }
 \value{
 ggplot2::ggplot object.
