@@ -1,3 +1,7 @@
+# GWASbeautifier 2.1
+
+* New function allowing traits renaming via `rename_traits()`
+
 # GWASbeautifier 2.0
 
 * Renamed package from GWASpoly.beautifier to GWASbeautifier.

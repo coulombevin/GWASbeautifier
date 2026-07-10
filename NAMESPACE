@@ -3,6 +3,7 @@
 export(extract_markers)
 export(get_formatted_gapit)
 export(plot_manhattan)
+export(rename_traits)
 export(save_manhattan)
 importFrom(dplyr,all_of)
 importFrom(dplyr,arrange)

@@ -2,8 +2,7 @@
 % Please edit documentation in R/extract_markers.R
 \name{extract_markers}
 \alias{extract_markers}
-\title{Extract all/significant markers from GWASpoly.thresh or GAPIT.thresh data
-obtained with \code{\link[GWASpoly:set.threshold]{GWASpoly::set.threshold()}} or \code{\link[=get_formatted_gapit]{get_formatted_gapit()}} command.}
+\title{Extract all/significant markers}
 \usage{
 extract_markers(data, significant_only = TRUE)
 }
@@ -18,8 +17,9 @@ threshold.}
 data.frame object with all requested markers.
 }
 \description{
-Extract all/significant markers from GWASpoly.thresh or GAPIT.thresh data
-obtained with \code{\link[GWASpoly:set.threshold]{GWASpoly::set.threshold()}} or \code{\link[=get_formatted_gapit]{get_formatted_gapit()}} command.
+Extract markers information (trait, marker, chromosome, position, model LOD values)
+from GWASpoly.thresh or GAPIT.thresh data obtained with
+\code{\link[GWASpoly:set.threshold]{GWASpoly::set.threshold()}} or \code{\link[=get_formatted_gapit]{get_formatted_gapit()}} command.
 }
 \examples{
 \dontrun{

@@ -51,4 +51,4 @@ rsconnect/
 .DS_Store
 .quarto
 
-.updates_pipeline
+.updates_pipeline.R

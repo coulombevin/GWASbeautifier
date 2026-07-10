@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_formatted_gapit.R
 \name{get_formatted_gapit}
 \alias{get_formatted_gapit}
-\title{Import and format GAPIT output results for \code{\link[=plot_manhattan]{plot_manhattan()}} usage}
+\title{Import and format GAPIT csv output results for \code{\link[=plot_manhattan]{plot_manhattan()}} usage}
 \usage{
 get_formatted_gapit(result_directory, gapit_cutOff = 0.05, verbose = TRUE)
 }
@@ -19,7 +19,7 @@ GAPIT analysis.}
 GAPIT.thresh object.
 }
 \description{
-Import and format GAPIT output results for \code{\link[=plot_manhattan]{plot_manhattan()}} usage
+Import and format GAPIT csv output results for \code{\link[=plot_manhattan]{plot_manhattan()}} usage
 }
 \examples{
 \dontrun{

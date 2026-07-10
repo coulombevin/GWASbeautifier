@@ -1,6 +1,8 @@
-#' Manhattan plot beautifier adapted from GWASpoly::manhattan.plot customized
-#' and optimized for data obtained with [GWASpoly::set.threshold()] or
-#' [get_formatted_gapit()] command.
+#' Manhattan plot beautifier
+#' @description
+#' Publication ready Manhattan plot generator adapted from
+#' [GWASpoly::manhattan.plot()], customized and optimized for data obtained
+#' with [GWASpoly::set.threshold()] or [get_formatted_gapit()] command.
 #'
 #' @param data,traits,models,chrom See GWASpoly::manhattan.plot documentation
 #' @param chrom_color          : vec(str, str)  List of 2 string color for
@@ -152,7 +154,7 @@ plot_manhattan <- function (
                        legend.position = 'none',
                        strip.background = ggplot2::element_blank(),
                        strip.text.y = ggplot2::element_text(angle = 90),
-                       plot.title = element_text(hjust = 0.5)) +
+                       plot.title = ggplot2::element_text(hjust = 0.5)) +
         ggplot2::geom_point(size = point_size,
                             alpha = point_alpha) +
         ggplot2::scale_shape(solid = TRUE) +

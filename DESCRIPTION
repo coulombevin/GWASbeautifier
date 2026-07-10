@@ -1,6 +1,6 @@
 Package: GWASbeautifier
 Title: Publication-ready Manhattan plots and utilities
-Version: 2.0
+Version: 2.1
 Authors@R: 
     person("Vincent", "Coulombe", , "vincent.coulombe.6@ulaval.ca", role = c("aut", "cre"),
            comment = c(ORCID = "0009-0000-0594-9985"))

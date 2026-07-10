@@ -1,4 +1,4 @@
-#' Import and format GAPIT output results for [plot_manhattan()] usage
+#' Import and format GAPIT csv output results for [plot_manhattan()] usage
 #'
 #' @param result_directory : str     Directory GAPIT package exported one folder
 #'                                   for each trait.

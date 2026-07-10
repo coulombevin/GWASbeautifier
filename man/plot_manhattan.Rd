@@ -2,9 +2,7 @@
 % Please edit documentation in R/plot_manhattan.R
 \name{plot_manhattan}
 \alias{plot_manhattan}
-\title{Manhattan plot beautifier adapted from GWASpoly::manhattan.plot customized
-and optimized for data obtained with \code{\link[GWASpoly:set.threshold]{GWASpoly::set.threshold()}} or
-\code{\link[=get_formatted_gapit]{get_formatted_gapit()}} command.}
+\title{Manhattan plot beautifier}
 \usage{
 plot_manhattan(
   data,
@@ -65,9 +63,9 @@ into separate panels.}
 ggplot2::ggplot object.
 }
 \description{
-Manhattan plot beautifier adapted from GWASpoly::manhattan.plot customized
-and optimized for data obtained with \code{\link[GWASpoly:set.threshold]{GWASpoly::set.threshold()}} or
-\code{\link[=get_formatted_gapit]{get_formatted_gapit()}} command.
+Publication ready Manhattan plot generator adapted from
+\code{\link[GWASpoly:manhattan.plot]{GWASpoly::manhattan.plot()}}, customized and optimized for data obtained
+with \code{\link[GWASpoly:set.threshold]{GWASpoly::set.threshold()}} or \code{\link[=get_formatted_gapit]{get_formatted_gapit()}} command.
 }
 \examples{
 \dontrun{
