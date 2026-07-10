@@ -7,13 +7,11 @@
 get_formatted_gapit(result_directory, gapit_cutOff = 0.05, verbose = TRUE)
 }
 \arguments{
-\item{result_directory}{: str     Directory GAPIT package exported one folder
-for each trait.}
+\item{result_directory}{str : Directory GAPIT package exported one folder for each trait.}
 
-\item{gapit_cutOff}{: double  Value used for 'cutOff' argument during
-GAPIT analysis.}
+\item{gapit_cutOff}{double : Value used for 'cutOff' argument during GAPIT analysis.}
 
-\item{verbose}{: bool    Print which trait is being formatted if TRUE}
+\item{verbose}{bool : Print which trait is being formatted if TRUE}
 }
 \value{
 GAPIT.thresh object.

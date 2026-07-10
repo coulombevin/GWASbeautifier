@@ -7,15 +7,14 @@
 rename_traits(data, old_trait_name, new_trait_name)
 }
 \arguments{
-\item{data}{: 'package'.thresh  GWASpoly or GAPIT threshold
-formated data.}
+\item{data}{'package'.thresh : Variable of class GWASpoly.thresh or GAPIT.thresh}
 
-\item{old_trait_name}{: vec(str) or str   Old trait(s) name}
+\item{old_trait_name}{vec(str) : Vector of old trait(s) name}
 
-\item{new_trait_name}{: vec(str) or str   New trait(s) name}
+\item{new_trait_name}{vec(str) : Vector of new trait(s) name}
 }
 \value{
-{.code package.thresh} object with renamed traits
+'package'.thresh object with renamed traits
 }
 \description{
 Standardize and format raw traits name into publication-ready scientific labels.

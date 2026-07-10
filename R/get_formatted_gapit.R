@@ -1,10 +1,8 @@
 #' Import and format GAPIT csv output results for [plot_manhattan()] usage
 #'
-#' @param result_directory : str     Directory GAPIT package exported one folder
-#'                                   for each trait.
-#' @param gapit_cutOff     : double  Value used for 'cutOff' argument during
-#'                                   GAPIT analysis.
-#' @param verbose          : bool    Print which trait is being formatted if TRUE
+#' @param result_directory str : Directory GAPIT package exported one folder for each trait.
+#' @param gapit_cutOff double : Value used for 'cutOff' argument during GAPIT analysis.
+#' @param verbose bool : Print which trait is being formatted if TRUE
 #'
 #' @returns GAPIT.thresh object.
 #' @export

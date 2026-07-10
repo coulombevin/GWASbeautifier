@@ -2,12 +2,11 @@
 #' @description
 #' Standardize and format raw traits name into publication-ready scientific labels.
 #'
-#' @param data           : 'package'.thresh  GWASpoly or GAPIT threshold
-#'                                           formated data.
-#' @param old_trait_name : vec(str) or str   Old trait(s) name
-#' @param new_trait_name : vec(str) or str   New trait(s) name
+#' @param data 'package'.thresh : Variable of class GWASpoly.thresh or GAPIT.thresh
+#' @param old_trait_name vec(str) : Vector of old trait(s) name
+#' @param new_trait_name vec(str) : Vector of new trait(s) name
 #'
-#' @returns {.code package.thresh} object with renamed traits
+#' @returns 'package'.thresh object with renamed traits
 #' @export
 #'
 #' @examples

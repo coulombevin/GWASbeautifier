@@ -6,8 +6,7 @@
 \alias{GWASbeautifier-package}
 \title{GWASbeautifier}
 \description{
-Tools to format and visualize GWAS results from GWASpoly, GAPIT, and related
-pipelines.
+Tools to format and visualize GWAS results from GWASpoly, GAPIT, and related pipelines.
 }
 \seealso{
 Useful links:

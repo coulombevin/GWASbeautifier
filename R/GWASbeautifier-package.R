@@ -1,7 +1,6 @@
 #' GWASbeautifier
 #'
-#' Tools to format and visualize GWAS results from GWASpoly, GAPIT, and related
-#' pipelines.
+#' Tools to format and visualize GWAS results from GWASpoly, GAPIT, and related pipelines.
 #'
 #' @keywords internal
 #'

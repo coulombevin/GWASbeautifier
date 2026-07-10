@@ -7,19 +7,15 @@
 extract_markers(data, significant_only = TRUE)
 }
 \arguments{
-\item{data}{: 'package'.thresh GWASpoly or GAPIT threshold
-formated data.}
+\item{data}{'package'.thresh : Variable of class GWASpoly.thresh or GAPIT.thresh}
 
-\item{significant_only}{: bool             Extract only markers above
-threshold.}
+\item{significant_only}{bool : Extract only markers above threshold.}
 }
 \value{
 data.frame object with all requested markers.
 }
 \description{
-Extract markers information (trait, marker, chromosome, position, model LOD values)
-from GWASpoly.thresh or GAPIT.thresh data obtained with
-\code{\link[GWASpoly:set.threshold]{GWASpoly::set.threshold()}} or \code{\link[=get_formatted_gapit]{get_formatted_gapit()}} command.
+Extract markers information (trait, marker, chromosome, position, model LOD values) from GWASpoly.thresh or GAPIT.thresh data obtained with \code{\link[GWASpoly:set.threshold]{GWASpoly::set.threshold()}} or \code{\link[=get_formatted_gapit]{get_formatted_gapit()}} command.
 }
 \examples{
 \dontrun{

@@ -1,4 +1,4 @@
-# GWASbeautifier
+# GWASbeautifier: Publication-Ready Manhattan Plots and Utilities
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/coulombevin/GWASbeautifier/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/coulombevin/GWASbeautifier/actions/workflows/R-CMD-check.yaml)

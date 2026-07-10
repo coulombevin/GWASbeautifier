@@ -1,13 +1,9 @@
 #' Extract all/significant markers
 #' @description
-#' Extract markers information (trait, marker, chromosome, position, model LOD values)
-#' from GWASpoly.thresh or GAPIT.thresh data obtained with
-#' [GWASpoly::set.threshold()] or [get_formatted_gapit()] command.
+#' Extract markers information (trait, marker, chromosome, position, model LOD values) from GWASpoly.thresh or GAPIT.thresh data obtained with [GWASpoly::set.threshold()] or [get_formatted_gapit()] command.
 #'
-#' @param data             : 'package'.thresh GWASpoly or GAPIT threshold
-#'                                            formated data.
-#' @param significant_only : bool             Extract only markers above
-#'                                            threshold.
+#' @param data 'package'.thresh : Variable of class GWASpoly.thresh or GAPIT.thresh
+#' @param significant_only bool : Extract only markers above threshold.
 #'
 #' @returns data.frame object with all requested markers.
 #' @export
