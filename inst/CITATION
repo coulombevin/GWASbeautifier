@@ -1,0 +1,9 @@
+bibentry(
+  key = "GWASbeautifier",
+  bibtype = "Manual",
+  title = "GWASbeautifier: Publication-Ready Manhattan Plots and Utilities",
+  author = c(person("Vincent", "Coulombe", role = c("aut", "cre"))),
+  note = "R package version 2.1",
+  year = "2026",
+  url = "https://github.com/coulombevin/GWASbeautifier"
+)
