@@ -83,9 +83,8 @@ plot_manhattan <- function (
     models <- union(models, dom.models)
     stopifnot(all(is.element(models, all.models)))
   }
-  # plotme <- thresh.data <- NULL
   # Define lists for plotme and tresholds data with the right size to reduce
-  # memory leaks from multiple realocation
+  # memory overuse from multiple realocation
   plotme_list <- vector("list", n.trait)
   thresh_list <- vector("list", n.trait)
   if (is.null(chrom)) {
@@ -114,34 +113,18 @@ plot_manhattan <- function (
     tmp$trait <- traits[k]
     # Store all thresholds data if output splited models
     if (split_models) {
-      # thresh.data <- dplyr::bind_rows(
-      #   thresh.data,
-      #   data.frame(
-      #     y = data@threshold[traits[k], models],
-      #     trait = traits[k],
-      #     model = models
-      #   )
-      # )
       thresh_list[[k]] <- data.frame(
         y = data@threshold[traits[k], models],
         trait = traits[k],
         model = models
       )
     } else {
-      # thresh.data <- dplyr::bind_rows(
-      #   thresh.data,
-      #   data.frame(
-      #     y = max(data@threshold[traits[k], models]),
-      #     trait = traits[k]
-      #   )
-      # )
       thresh_list[[k]] <- data.frame(
         y = max(data@threshold[traits[k], models]),
         trait = traits[k]
       )
     }
     plotme_list[[k]] <- tmp
-    # plotme <- dplyr::bind_rows(plotme, tmp)
   }
   plotme <- dplyr::bind_rows(plotme_list)
   thresh.data <- dplyr::bind_rows(thresh_list)
@@ -174,12 +157,6 @@ plot_manhattan <- function (
       sub_plotme <- plotme[plotme$trait == t,]
       p[[t]] <- ggplot2::ggplot(data = sub_plotme,
                                 ggplot2::aes(x = .data$x, y = .data$y, colour = .data$color)) +
-        # ggplot2::scale_y_continuous(
-        #   name = expression(paste('-log'[10], '(p)')),
-        #   n.breaks = lod_thicks_count
-        #   # breaks = scales::pretty_breaks(n=4)
-        #   # breaks = scales::pretty_breaks(n=4)
-        # ) +
         ggplot2::guides(colour = 'none') +
         ggplot2::theme_bw() +
         ggplot2::theme(text = ggplot2::element_text(size = 15),
@@ -239,10 +216,6 @@ plot_manhattan <- function (
         # Add highlighted markers over the current plot
         p[[t]] <- p[[t]] +
           ggplot2::geom_point(
-            # data = subset(
-            #   plotme_significant,
-            #   (significant_show & trait == t)
-            # ),
             data = dplyr::filter(
               plotme_significant,
               .data$significant_show & .data$trait == t
@@ -252,10 +225,6 @@ plot_manhattan <- function (
             alpha = point_alpha
           ) +
           ggplot2::geom_point(
-            # data = subset(
-            #   plotme_significant,
-            #   (multi_model & trait == t)
-            # ),
             data = dplyr::filter(
               plotme_significant,
               .data$multi_model & .data$trait == t
