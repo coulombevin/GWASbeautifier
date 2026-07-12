@@ -53,12 +53,12 @@ get_formatted_gapit <- function(result_directory, gapit_cutOff  = 0.05, verbose 
       )
       # Get data and format for scores and map manipulation
       tmp_file <- utils::read.csv(paste(result_directory, trait, file, sep = "/")) %>%
-        dplyr::select(SNP, Chr, Pos, P.value) %>%
-        dplyr::mutate(Chr = factor(Chr, ordered = TRUE)) %>%
-        dplyr::rename(Marker = SNP, Chrom = Chr, Position = Pos) %>%
-        dplyr::mutate(Marker_row = Marker) %>%
+        dplyr::select(.data$SNP, .data$Chr, .data$Pos, .data$P.value) %>%
+        dplyr::mutate(Chr = factor(.data$Chr, ordered = TRUE)) %>%
+        dplyr::rename(Marker = .data$SNP, Chrom = .data$Chr, Position = .data$Pos) %>%
+        dplyr::mutate(Marker_row = .data$Marker) %>%
         tibble::column_to_rownames(var = "Marker_row") %>%
-        dplyr::mutate(P.value = -log10(P.value))
+        dplyr::mutate(P.value = -log10(.data$P.value))
       # Generate a LOD score table
       if (is.null(gapit_output$scores[[trait]])) {
         gapit_output$scores[[trait]] <- data.frame(
@@ -117,7 +117,7 @@ get_formatted_gapit <- function(result_directory, gapit_cutOff  = 0.05, verbose 
   }
   # Sort map
   gapit_output$map <- gapit_output$map %>%
-    dplyr::arrange(Chrom, Position)
+    dplyr::arrange(.data$Chrom, .data$Position)
   rownames(gapit_output$map) <- NULL
   # Sort scores using map order
   for (trait in traits) {

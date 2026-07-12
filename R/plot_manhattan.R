@@ -137,14 +137,14 @@ plot_manhattan <- function (
   if (split_models) {
     # Find facet maximum value and add 1 LOD to increase Y limit and re-apply factor levels
     facet_limits <- dplyr::bind_rows(
-        plotme %>%dplyr::select(trait, y, model),
-        thresh.data %>% dplyr::select(trait, y, model)
+        plotme %>%dplyr::select(.data$trait, .data$y, .data$model),
+        thresh.data %>% dplyr::select(.data$trait, .data$y, .data$model)
       ) %>%
-      dplyr::group_by(trait, model) %>%
-      dplyr::summarise(y = max(y, na.rm = TRUE) + 1, .groups = 'drop')%>%
+      dplyr::group_by(.data$trait, .data$model) %>%
+      dplyr::summarise(y = max(.data$y, na.rm = TRUE) + 1, .groups = 'drop')%>%
       dplyr::mutate(
-        y = ceiling(y / (lod_thicks_count - 1)) * (lod_thicks_count - 1),
-        model = factor(model, levels = models)
+        y = ceiling(.data$y / (lod_thicks_count - 1)) * (lod_thicks_count - 1),
+        model = factor(.data$model, levels = models)
       )
     p <- list()
     for (t in traits){
@@ -175,7 +175,7 @@ plot_manhattan <- function (
                             scales = 'free_y',
                             strip.position = "right") +
         ggplot2::geom_blank(data = facet_limits[facet_limits$trait == t,],
-                            ggplot2::aes(y = y),
+                            ggplot2::aes(y = .data$y),
                             inherit.aes = FALSE) +
         ggplot2::ggtitle(t)
 
@@ -183,7 +183,10 @@ plot_manhattan <- function (
       if (!is.null(significant_color)) {
         # Copy the original data for highlight and manipulation
         plotme_significant <- sub_plotme %>%
-          dplyr::left_join(thresh.data %>% dplyr::select(trait, model, thresh = y), by = c('trait', 'model'))
+          dplyr::left_join(
+            thresh.data %>% dplyr::select(.data$trait, .data$model, thresh = .data$y),
+            by = c('trait', 'model')
+          )
         # Look for file name that contain a list of precise markers to highlight
         if (!is.null(significant_markers )){
           # Set show value to TRUE if markers are found in csv
@@ -191,19 +194,19 @@ plot_manhattan <- function (
           plotme_significant <- plotme_significant %>%
             dplyr::left_join(dplyr::select(significant_markers %>%
                                              dplyr::mutate(significant_show = TRUE),
-                                           trait, Marker, significant_show, model),
+                                           .data$trait, .data$Marker, .data$significant_show, .data$model),
                              by = c("trait", "Marker", "model")) %>%
-            dplyr::mutate(significant_show = tidyr::replace_na(significant_show, FALSE))
+            dplyr::mutate(significant_show = tidyr::replace_na(.data$significant_show, FALSE))
         } else {
           # No file means highlight all significant markers
           plotme_significant <- plotme_significant %>%
-            dplyr::mutate(significant_show = (y > thresh))
+            dplyr::mutate(significant_show = (.data$y > .data$thresh))
         }
 
         if (!is.null(multi_model_significant_color)) {
           plotme_significant <- plotme_significant %>%
-            dplyr::group_by(Marker) %>%
-            dplyr::mutate(multi_model = significant_show & (sum(significant_show) >= 2) & trait == t) %>%
+            dplyr::group_by(.data$Marker) %>%
+            dplyr::mutate(multi_model = .data$significant_show & (sum(.data$significant_show) >= 2) & .data$trait == t) %>%
             dplyr::ungroup()
         } else {
           plotme_significant <- plotme_significant %>%
@@ -215,7 +218,7 @@ plot_manhattan <- function (
           ggplot2::geom_point(
             data = subset(
               plotme_significant,
-              (significant_show & trait == t)
+              (.data$significant_show & .data$trait == t)
             ),
             color = significant_color,
             size = point_size * 1.25,
@@ -224,7 +227,7 @@ plot_manhattan <- function (
           ggplot2::geom_point(
             data = subset(
               plotme_significant,
-              (multi_model & trait == t)
+              (.data$multi_model & .data$trait == t)
             ),
             color = multi_model_significant_color,
             size = point_size * 1.25,
@@ -266,10 +269,10 @@ plot_manhattan <- function (
     return(p)
 
   } else {
-    facet_limits <- dplyr::bind_rows(plotme %>% dplyr::select(trait, y),
-                                     thresh.data %>% dplyr::select(trait, y)) %>%
-      dplyr::group_by(trait) %>%
-      dplyr::summarise(y = max(y, na.rm = TRUE) + 1, .groups = 'drop')
+    facet_limits <- dplyr::bind_rows(plotme %>% dplyr::select(.data$trait, .data$y),
+                                     thresh.data %>% dplyr::select(.data$trait, .data$y)) %>%
+      dplyr::group_by(.data$trait) %>%
+      dplyr::summarise(y = max(.data$y, na.rm = TRUE) + 1, .groups = 'drop')
     p <- ggplot2::ggplot(data = plotme,
                          ggplot2::aes(x = .data$x, y = .data$y, colour = .data$color)) +
       ggplot2::ylab(expression(paste('-log'[10], '(p)'))) +
@@ -283,27 +286,30 @@ plot_manhattan <- function (
       ggplot2::geom_point(size = point_size,
                           alpha = point_alpha) +
       ggplot2::scale_shape(solid = TRUE) +
-      ggplot2::facet_wrap(~trait,
+      ggplot2::facet_wrap(~.data$trait,
                           ncol = 1,
                           scales = 'free_y') +
       ggplot2::geom_blank(data = facet_limits,
-                          ggplot2::aes(y = y),
+                          ggplot2::aes(y = .data$y),
                           inherit.aes = FALSE)
 
     # Look for significant markers highlight
     if (!is.null(significant_color)) {
       # Copy the original data for highlight and manipulation
       plotme_significant <- plotme %>%
-        dplyr::left_join(thresh.data %>% dplyr::select(trait, thresh = y), by = 'trait')
+        dplyr::left_join(
+          thresh.data %>% dplyr::select(.data$trait, thresh = .data$y),
+          by = 'trait'
+        )
       # Look for file name that contain a list of precise markers to highlight
       if (!is.null(significant_markers )){
         # Set show value to TRUE if markers are found in csv
         plotme_significant <- plotme_significant %>%
           dplyr::left_join(dplyr::select(significant_markers %>%
                                            dplyr::mutate(significant_show = TRUE),
-                                         trait, Marker, significant_show),
+                                         .data$trait, .data$Marker, .data$significant_show),
                            by = c("trait", "Marker")) %>%
-          dplyr::mutate(significant_show = tidyr::replace_na(significant_show, FALSE))
+          dplyr::mutate(significant_show = tidyr::replace_na(.data$significant_show, FALSE))
       } else {
         # No file means highlight all significant markers
         plotme_significant <- plotme_significant %>%
@@ -311,7 +317,7 @@ plot_manhattan <- function (
       }
       # Add highlighted markers over the current plot
       p <- p +
-        ggplot2::geom_point(data = subset(plotme_significant, (y > thresh & significant_show)),
+        ggplot2::geom_point(data = subset(plotme_significant, (.data$y > .data$thresh & .data$significant_show)),
                             color = significant_color,
                             size = point_size,
                             alpha = point_alpha)

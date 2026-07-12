@@ -8,6 +8,7 @@
 #' @returns data.frame object with all requested markers.
 #' @export
 #' @importFrom magrittr %>%
+#' @importFrom rlang .data
 #' @examples
 #' \dontrun{
 #' significant_markers <- extract_markers(data = data_with_threshold)
@@ -27,13 +28,18 @@ extract_markers <- function (data, significant_only = TRUE) {
 
   # Loop trough traits
   for (i in seq(from = 1, to = length(data@scores))) {
+
+    current_trait <- names(data@scores[i])
     # Generate a data frame using marker, trait, scores, chrom and pos
     data_tmp <- data@scores[[i]] %>%
-      dplyr::mutate(Marker = rownames(.), .before = 1) %>%
-      dplyr::mutate(trait = names(data@scores[i]), .before = 1) %>%
-      dplyr::left_join(dplyr::select(data@map, Marker, Chrom, Position), by = 'Marker') %>%
-      dplyr::relocate(Chrom, .after = Marker) %>%
-      dplyr::relocate(Position, .after = Chrom)
+      tibble::rownames_to_column(var = "Marker") %>%
+      dplyr::mutate(trait = current_trait, .before = 1) %>%
+      dplyr::left_join(
+        dplyr::select(data@map, .data$Marker, .data$Chrom, .data$Position),
+        by = 'Marker'
+      ) %>%
+      dplyr::relocate(.data$Chrom, .after = .data$Marker) %>%
+      dplyr::relocate(.data$Position, .after = .data$Chrom)
 
     if (significant_only) {
       # Get the threshold
