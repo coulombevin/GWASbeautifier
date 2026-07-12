@@ -83,7 +83,11 @@ plot_manhattan <- function (
     models <- union(models, dom.models)
     stopifnot(all(is.element(models, all.models)))
   }
-  plotme <- thresh.data <- NULL
+  # plotme <- thresh.data <- NULL
+  # Define lists for plotme and tresholds data with the right size to reduce
+  # memory leaks from multiple realocation
+  plotme_list <- vector("list", n.trait)
+  thresh_list <- vector("list", n.trait)
   if (is.null(chrom)) {
     x <- get_x(data@map[, 2:3], gap_size = gap_size)
     ix <- 1:nrow(data@map)
@@ -110,19 +114,38 @@ plot_manhattan <- function (
     tmp$trait <- traits[k]
     # Store all thresholds data if output splited models
     if (split_models) {
-      thresh.data <- dplyr::bind_rows(
-        thresh.data,
-        data.frame(
-          y = data@threshold[traits[k], models],
-          trait = traits[k],
-          model = models
-        )
+      # thresh.data <- dplyr::bind_rows(
+      #   thresh.data,
+      #   data.frame(
+      #     y = data@threshold[traits[k], models],
+      #     trait = traits[k],
+      #     model = models
+      #   )
+      # )
+      thresh_list[[k]] <- data.frame(
+        y = data@threshold[traits[k], models],
+        trait = traits[k],
+        model = models
       )
     } else {
-      thresh.data <- dplyr::bind_rows(thresh.data, data.frame(y = max(data@threshold[traits[k], models]), trait = traits[k]))
+      # thresh.data <- dplyr::bind_rows(
+      #   thresh.data,
+      #   data.frame(
+      #     y = max(data@threshold[traits[k], models]),
+      #     trait = traits[k]
+      #   )
+      # )
+      thresh_list[[k]] <- data.frame(
+        y = max(data@threshold[traits[k], models]),
+        trait = traits[k]
+      )
     }
-    plotme <- dplyr::bind_rows(plotme, tmp)
+    plotme_list[[k]] <- tmp
+    # plotme <- dplyr::bind_rows(plotme, tmp)
   }
+  plotme <- dplyr::bind_rows(plotme_list)
+  thresh.data <- dplyr::bind_rows(thresh_list)
+
   plotme$trait <- factor(plotme$trait)
   plotme$model <- gsub(pattern = "-ref", replacement = "",
                        x = plotme$model)
@@ -216,18 +239,26 @@ plot_manhattan <- function (
         # Add highlighted markers over the current plot
         p[[t]] <- p[[t]] +
           ggplot2::geom_point(
-            data = subset(
+            # data = subset(
+            #   plotme_significant,
+            #   (significant_show & trait == t)
+            # ),
+            data = dplyr::filter(
               plotme_significant,
-              (.data$significant_show & .data$trait == t)
+              .data$significant_show & .data$trait == t
             ),
             color = significant_color,
             size = point_size * 1.25,
             alpha = point_alpha
           ) +
           ggplot2::geom_point(
-            data = subset(
+            # data = subset(
+            #   plotme_significant,
+            #   (multi_model & trait == t)
+            # ),
+            data = dplyr::filter(
               plotme_significant,
-              (.data$multi_model & .data$trait == t)
+              .data$multi_model & .data$trait == t
             ),
             color = multi_model_significant_color,
             size = point_size * 1.25,
