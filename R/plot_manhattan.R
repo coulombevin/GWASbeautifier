@@ -153,6 +153,13 @@ plot_manhattan <- function (
         model = factor(.data$model, levels = models)
       )
     p <- list()
+
+    # Find all chromosome and breaks
+    if (is.null(chrom)) {
+      allchr <- unique(data@map[, 2])
+      breaks <- (tapply(x, data@map[, 2], max) + tapply(x, data@map[, 2], min)) / 2
+    }
+
     for (t in traits){
       sub_plotme <- plotme[plotme$trait == t,]
       p[[t]] <- ggplot2::ggplot(data = sub_plotme,
@@ -236,8 +243,6 @@ plot_manhattan <- function (
       }
 
       if (is.null(chrom)) {
-        allchr <- unique(data@map[, 2])
-        breaks <- (tapply(x, data@map[, 2], max) + tapply(x, data@map[, 2], min))/2
         # Plot each markers based on chromosome color
         p[[t]] <- p[[t]] +
           ggplot2::scale_x_continuous(name = 'Chromosome',
