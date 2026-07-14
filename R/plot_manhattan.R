@@ -91,7 +91,9 @@ plot_manhattan <- function (
     x <- get_x(data@map[, 2:3], gap_size = gap_size)
     ix <- 1:nrow(data@map)
   } else {
-    stopifnot(chrom %in% levels(data@map$Chrom))
+    # Verify if all chromosome are in map chromosome
+    stopifnot(all(chrom %in% levels(data@map$Chrom)))
+    # TODO: if vector forwarded, there will be an error, need to change function
     ix <- which(as.character(data@map$Chrom) == chrom)
     x <- data@map$Position[ix]/1e+06
   }
@@ -221,6 +223,13 @@ plot_manhattan <- function (
         }
 
         # Add highlighted markers over the current plot
+        # sig_points <- plotme_significant[
+        #   plotme_significant$significant_show & plotme_significant$trait == t,
+        # ]
+        #
+        # multi_points <- plotme_significant[
+        #   plotme_significant$multi_model & plotme_significant$trait == t,
+        # ]
         p[[t]] <- p[[t]] +
           ggplot2::geom_point(
             data = dplyr::filter(
