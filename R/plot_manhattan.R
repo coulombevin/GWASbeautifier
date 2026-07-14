@@ -40,7 +40,7 @@ plot_manhattan <- function (
     significant_color = '#cc4f89',
     multi_model_significant_color = "#fb8500",
     point_size = 1.5,
-    point_alpha = NA,
+    point_alpha = 1,
     threshold_line_color = 'grey50',
     threshold_line_type = 2,
     significant_markers = NULL,
