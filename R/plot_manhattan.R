@@ -132,10 +132,15 @@ plot_manhattan <- function (
   thresh.data <- dplyr::bind_rows(thresh_list)
 
   plotme$trait <- factor(plotme$trait)
-  plotme$model <- gsub(pattern = "-ref", replacement = "",
-                       x = plotme$model)
-  plotme$model <- gsub(pattern = "-alt", replacement = "",
-                       x = plotme$model)
+  # plotme$model <- gsub(pattern = "-ref", replacement = "",
+  #                      x = plotme$model)
+  # plotme$model <- gsub(pattern = "-alt", replacement = "",
+  #                      x = plotme$model)
+  plotme$model <- gsub(
+    pattern = "-(ref|alt)$",
+    replacement = "",
+    x = plotme$model
+  )
   # Factorize models to follow user model order
   plotme$model <- factor(plotme$model, levels = models)
   thresh.data$model <- factor(thresh.data$model, levels = models)
