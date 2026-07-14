@@ -1,3 +1,7 @@
+# GWASbeautifier 2.2
+
+* Multiple corrections and computing consumption reduction
+
 # GWASbeautifier 2.1
 
 * New function allowing traits renaming via `rename_traits()`
