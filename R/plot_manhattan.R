@@ -132,10 +132,6 @@ plot_manhattan <- function (
   thresh.data <- dplyr::bind_rows(thresh_list)
 
   plotme$trait <- factor(plotme$trait)
-  # plotme$model <- gsub(pattern = "-ref", replacement = "",
-  #                      x = plotme$model)
-  # plotme$model <- gsub(pattern = "-alt", replacement = "",
-  #                      x = plotme$model)
   plotme$model <- gsub(
     pattern = "-(ref|alt)$",
     replacement = "",
@@ -228,28 +224,22 @@ plot_manhattan <- function (
         }
 
         # Add highlighted markers over the current plot
-        # sig_points <- plotme_significant[
-        #   plotme_significant$significant_show & plotme_significant$trait == t,
-        # ]
-        #
-        # multi_points <- plotme_significant[
-        #   plotme_significant$multi_model & plotme_significant$trait == t,
-        # ]
+        sig_points <- plotme_significant[
+          plotme_significant$significant_show & plotme_significant$trait == t,
+        ]
+
+        multi_points <- plotme_significant[
+          plotme_significant$multi_model & plotme_significant$trait == t,
+        ]
         p[[t]] <- p[[t]] +
           ggplot2::geom_point(
-            data = dplyr::filter(
-              plotme_significant,
-              .data$significant_show & .data$trait == t
-            ),
+            sig_points,
             color = significant_color,
             size = point_size * 1.25,
             alpha = point_alpha
           ) +
           ggplot2::geom_point(
-            data = dplyr::filter(
-              plotme_significant,
-              .data$multi_model & .data$trait == t
-            ),
+            multi_points,
             color = multi_model_significant_color,
             size = point_size * 1.25,
             alpha = point_alpha
